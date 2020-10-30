@@ -26,6 +26,10 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 # Initialize Qt resources from file resources.py
 from .resources import *
+from qgis.core import QgsProject
+from qgis.core import *
+
+from .Model import *
 
 # Import the code for the DockWidget
 from .catalogue_of_coordinates_dockwidget import CatalogueOfCoordinatesDockWidget
@@ -68,13 +72,13 @@ class CatalogueOfCoordinates:
         self.toolbar = self.iface.addToolBar(u'CatalogueOfCoordinates')
         self.toolbar.setObjectName(u'CatalogueOfCoordinates')
 
-        #print "** INITIALIZING CatalogueOfCoordinates"
+        # print "** INITIALIZING CatalogueOfCoordinates"
 
         self.pluginIsActive = False
         self.dockwidget = None
 
-
     # noinspection PyMethodMayBeStatic
+
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
 
@@ -89,18 +93,17 @@ class CatalogueOfCoordinates:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('CatalogueOfCoordinates', message)
 
-
     def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -163,7 +166,6 @@ class CatalogueOfCoordinates:
 
         return action
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -179,7 +181,7 @@ class CatalogueOfCoordinates:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        #print "** CLOSING CatalogueOfCoordinates"
+        # print "** CLOSING CatalogueOfCoordinates"
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
@@ -192,11 +194,10 @@ class CatalogueOfCoordinates:
 
         self.pluginIsActive = False
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        #print "** UNLOAD CatalogueOfCoordinates"
+        # print "** UNLOAD CatalogueOfCoordinates"
 
         for action in self.actions:
             self.iface.removePluginMenu(
@@ -214,7 +215,7 @@ class CatalogueOfCoordinates:
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
-            #print "** STARTING CatalogueOfCoordinates"
+            # print "** STARTING CatalogueOfCoordinates"
 
             # dockwidget may not exist if:
             #    first run of plugin
@@ -230,3 +231,30 @@ class CatalogueOfCoordinates:
             # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
+
+            curLayers = [tree_layer.layer() for tree_layer in
+                         QgsProject.instance().layerTreeRoot().findLayers()]
+
+            print ("Все слои:", curLayers)
+
+            layerName = []
+
+            for layer in curLayers:
+                print (layer.name())
+                layerName.append(layer.name())
+
+            self.dockwidget.layerForCoordCB.clear()
+
+            self.dockwidget.layerForCoordCB.addItems(layerName)
+
+            def createCataloge():
+
+                layerIndex = self.dockwidget.layerForCoordCB.currentIndex()
+                layer = curLayers[layerIndex]
+                print (layer)
+
+                Model.numeration(layer)
+
+            createCataloge()
+
+            self.dockwidget.createButton.clicked.connect(createCataloge)

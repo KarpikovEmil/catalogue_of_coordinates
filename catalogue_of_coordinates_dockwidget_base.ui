@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
+    <width>377</width>
     <height>250</height>
    </rect>
   </property>
@@ -16,25 +16,9 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Выберите слой для координирования:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -42,47 +26,67 @@
          </size>
         </property>
         <property name="text">
-         <string>Путь к файлу</string>
+         <string>Выберите слой для координирования:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QComboBox" name="layerForCoordCB"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
         <property name="maximumSize">
          <size>
-          <width>30</width>
-          <height>16777215</height>
+          <width>16777215</width>
+          <height>20</height>
          </size>
         </property>
         <property name="text">
-         <string>...</string>
+         <string>Выберите папку для сохранения:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Путь к файлу</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="createButton">
+        <property name="text">
+         <string>Создать каталог координат</string>
         </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="8" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Создать каталог координат</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Выберите папку для сохранения:</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
