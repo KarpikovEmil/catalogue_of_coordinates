@@ -3,11 +3,11 @@ from qgis.core import *
 
 class PoligonZU:
 
-    def __init__(self, idPoligon, status, pointsPoligon, pointsHole):
+    def __init__(self, idPoligon, status, coordinatesPoligon, coordinatesHole):
         self.id = idPoligon
         self.status = status
-        self.pointsPoligon = pointsPoligon
-        self.pointsHole = pointsHole
+        self.coordinatesPoligon = coordinatesPoligon
+        self.coordinatesHole = coordinatesHole
 
 
 class PointValue:
@@ -19,53 +19,60 @@ class PointValue:
 
 class Model:
 
+    allPoligons = []
+    allPoints = []
+    
+    j = 1
+
+    def findSimilarPoint(poligonZU, pointsList, coordinatesType):
+        for point in pointsList:
+            pointValue = PointValue(Model.j, point)
+            for pointIter in Model.allPoints:
+                if pointValue.coordinates == pointIter.coordinates:
+                    pointValue.id = pointIter.id
+                    Model.j -= 1
+                    break
+            Model.allPoints.append(pointValue)
+            coordinatesType.append(pointValue)
+            Model.j += 1
+
     def numeration(layer):
 
-        allPoligons = []
-        allPoints = []
-        i = 1
-        j = 1
         layerFeat = layer.getFeatures()
+
         for obj in layerFeat:
 
+            # Создание объекта класса PoligonZU
             idPoligon = obj.attribute("id")
             statusPoligon = obj.attribute("status")
-            pointsPoligon = []
-            pointsHole = []
+            coordinatesPoligon = []
+            coordinatesHole = []
+            poligonZU = PoligonZU(idPoligon, statusPoligon,
+                                  coordinatesPoligon, coordinatesHole)
 
-            poligon = PoligonZU(idPoligon, statusPoligon,
-                                pointsPoligon, pointsHole)
-
-            geometry = obj.geometry()
-
-            asMuPL = geometry.asMultiPolygon()
-
+            # Получаем геомертию объекта как геометрию мульти полигона
+            asMuPL = obj.geometry().asMultiPolygon()
             poligonList = asMuPL[0]
 
+            i = 1
             for pointsList in poligonList:
+                if i == 1:
+                    coordinatesType = poligonZU.coordinatesPoligon
+                    print("Печать коорд полигона")
+                else:
+                    coordinatesType = poligonZU.coordinatesHole
+                    print("Печать коорд дырки")
+                Model.findSimilarPoint(poligonZU, pointsList, coordinatesType)
+                print("Конец печати полигона")
+                i += 1
 
-                for point in pointsList:
-                    pointValue = PointValue(j, point)
-                    for pointIter in allPoints:
-                        if pointValue.coordinates == pointIter.coordinates:
-                            pointValue.id = pointIter.id
-                            break
-                    allPoints.append(pointValue)
-                    poligon.pointsPoligon.append(pointValue)
-                    j += 1
+            Model.allPoligons.append(poligonZU)
 
-                    print (point)
-                print ("Конец печати полигона")
-
-            count = len(poligonList)
-            print (allPoints)
-
-            print ("Список точек:", type(poligonList))
-            print ("Количество списков:", count, type(count))
-
-            allPoligons.append(poligon)
-
-        for poligon in allPoligons:
-            for point in poligon.pointsPoligon:
-                print (point.id, point.coordinates)
-
+        Model.allPoligons.sort(key=lambda poligon: poligon.id)
+        for poligonZU in Model.allPoligons:
+            print(poligonZU.id)
+            print(poligonZU.status)
+            for point in poligonZU.coordinatesPoligon:
+                print(point.id, point.coordinates)
+            for point in poligonZU.coordinatesHole:
+                print(point.id, point.coordinates)
